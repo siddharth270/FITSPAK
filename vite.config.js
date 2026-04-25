@@ -9,8 +9,8 @@ export default defineConfig({
       registerType: "autoUpdate",
       includeAssets: ["favicon.svg"],
       manifest: {
-        name: "JEERA — Workout Tracker",
-        short_name: "JEERA",
+        name: "FITSPAK — Workout Tracker",
+        short_name: "FITSPAK",
         description: "Track workouts, plan routines, crush PRs.",
         theme_color: "#F2F2F7",
         background_color: "#F2F2F7",

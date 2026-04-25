@@ -1,4 +1,4 @@
-# JEERA — Workout Tracker
+# FITSPAK — Workout Tracker
 
 A mobile-first PWA with an iOS-native design language. Track workouts, plan weekly routines, and monitor progress — all data stays on your device via IndexedDB.
 

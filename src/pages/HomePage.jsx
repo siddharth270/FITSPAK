@@ -1,7 +1,7 @@
 import { Flame, Zap, Trophy, Play, ChevronRight, Moon, Sun } from "lucide-react";
 import { motion } from "framer-motion";
 import { useApp } from "../context/AppContext";
-import { fmtDate, fmtVolume } from "../lib/helpers";
+import { fmtDate, fmtVolume, todayISO } from "../lib/helpers";
 
 const fade = (i) => ({
   initial: { opacity: 0, y: 10 },
@@ -19,6 +19,27 @@ export default function HomePage() {
   const thisWeek = workouts.filter((w) => new Date(w.date) >= weekAgo);
   const weekVolume = thisWeek.reduce((s, w) => s + w.totalVolume, 0);
   const recent = workouts.slice(0, 4);
+
+  // Streak + calendar
+  const todayStr = todayISO();
+  const workoutDates = new Set(workouts.map((w) => w.date));
+
+  let streak = 0;
+  const streakCursor = new Date();
+  while (true) {
+    const iso = `${streakCursor.getFullYear()}-${String(streakCursor.getMonth() + 1).padStart(2, "0")}-${String(streakCursor.getDate()).padStart(2, "0")}`;
+    if (!workoutDates.has(iso)) break;
+    streak++;
+    streakCursor.setDate(streakCursor.getDate() - 1);
+  }
+
+  const yr = now.getFullYear();
+  const mo = now.getMonth();
+  const firstDow = new Date(yr, mo, 1).getDay();
+  const daysInMo = new Date(yr, mo + 1, 0).getDate();
+  const calCells = [...Array(firstDow).fill(null), ...Array.from({ length: daysInMo }, (_, i) => i + 1)];
+  while (calCells.length % 7 !== 0) calCells.push(null);
+  const isoOf = (d) => `${yr}-${String(mo + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
 
   return (
     <div className="px-4 pt-3">
@@ -62,9 +83,68 @@ export default function HomePage() {
         ))}
       </motion.div>
 
+      {/* Streak Calendar */}
+      <motion.div {...fade(2)} className="bg-white dark:bg-[#1C1C1E] rounded-ios-lg shadow-ios-sm p-4 mb-4">
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-[17px] font-sf font-semibold">
+            {now.toLocaleDateString("en-US", { month: "long", year: "numeric" })}
+          </span>
+          <div className="flex items-center gap-1.5">
+            <Flame size={18} className={streak > 0 ? "text-ios-orange" : "text-[#C7C7CC]"} />
+            <span className={`text-[20px] font-sf font-bold leading-none ${streak > 0 ? "text-ios-orange" : "text-[#C7C7CC]"}`}>
+              {streak}
+            </span>
+            <span className="text-[13px] font-sf text-[#8E8E93]">
+              {streak === 1 ? "day streak" : "day streak"}
+            </span>
+          </div>
+        </div>
+
+        {/* Day-of-week headers */}
+        <div className="grid grid-cols-7 mb-1.5">
+          {["S", "M", "T", "W", "T", "F", "S"].map((d, i) => (
+            <div key={i} className="text-center text-[11px] font-sf font-semibold text-[#8E8E93]">
+              {d}
+            </div>
+          ))}
+        </div>
+
+        {/* Day cells */}
+        <div className="grid grid-cols-7 gap-y-0.5">
+          {calCells.map((day, i) => {
+            if (!day) return <div key={i} />;
+            const iso = isoOf(day);
+            const hasWorkout = workoutDates.has(iso);
+            const isToday = iso === todayStr;
+            const isFuture = iso > todayStr;
+            return (
+              <div key={i} className="flex items-center justify-center py-[2px]">
+                <div
+                  className={`w-[32px] h-[32px] rounded-full flex items-center justify-center
+                    ${hasWorkout ? "bg-ios-blue" : ""}
+                    ${isToday && !hasWorkout ? "border-[2px] border-ios-blue" : ""}
+                  `}
+                >
+                  <span
+                    className={`text-[13px] font-sf font-medium select-none
+                      ${hasWorkout ? "text-white font-semibold" : ""}
+                      ${isToday && !hasWorkout ? "text-ios-blue font-semibold" : ""}
+                      ${!hasWorkout && !isToday && isFuture ? "text-[#C7C7CC] dark:text-[#48484A]" : ""}
+                      ${!hasWorkout && !isToday && !isFuture ? "text-black dark:text-white" : ""}
+                    `}
+                  >
+                    {day}
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </motion.div>
+
       {/* Quick Start — big iOS blue button */}
       <motion.button
-        {...fade(2)}
+        {...fade(3)}
         onClick={startEmptyWorkout}
         className="w-full py-[18px] rounded-ios-lg bg-ios-blue text-white
           font-sf font-semibold text-[17px]
@@ -79,7 +159,7 @@ export default function HomePage() {
       {/* Today's Routine */}
       {todayRoutine && (
         <motion.button
-          {...fade(3)}
+          {...fade(4)}
           onClick={startRoutineWorkout}
           className="w-full bg-white dark:bg-[#1C1C1E] rounded-ios-lg p-4 shadow-ios-sm
             flex items-center justify-between text-left mb-5
@@ -105,7 +185,7 @@ export default function HomePage() {
 
       {/* Recent Workouts — iOS grouped list */}
       {recent.length > 0 && (
-        <motion.div {...fade(4)}>
+        <motion.div {...fade(5)}>
           <h3 className="text-[13px] font-sf font-medium text-[#8E8E93] uppercase tracking-wide px-1 mb-2">
             Recent Workouts
           </h3>

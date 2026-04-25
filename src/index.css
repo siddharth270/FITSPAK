@@ -1,0 +1,111 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  overscroll-behavior: none;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif;
+  background: #F2F2F7;
+  color: #000000;
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.dark body {
+  background: #000000;
+  color: #FFFFFF;
+}
+
+/* iOS-style input sizing to prevent zoom */
+input[type="text"],
+input[type="number"],
+input[type="date"],
+input[type="search"],
+select,
+textarea {
+  font-size: 16px !important;
+}
+
+/* Hide scrollbar */
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+/* ─── iOS card group styling ─── */
+.ios-card {
+  @apply bg-white dark:bg-[#1C1C1E] rounded-ios-lg;
+}
+
+.ios-card-inset {
+  @apply bg-white dark:bg-[#1C1C1E] rounded-ios-lg mx-4;
+}
+
+.ios-separator {
+  @apply border-b border-[#C6C6C8]/30 dark:border-[#38383A];
+}
+
+/* ─── iOS grouped table style ─── */
+.ios-group-header {
+  @apply text-[13px] font-sf text-[#6D6D72] dark:text-[#8E8E93] uppercase tracking-wide px-5 pb-2 pt-1;
+}
+
+/* ─── iOS segmented control ─── */
+.ios-segment {
+  @apply bg-[#E9E9EB] dark:bg-[#39393D] rounded-[9px] p-[2px] flex;
+}
+
+.ios-segment-btn {
+  @apply flex-1 py-[7px] rounded-[7px] text-[13px] font-sf font-semibold text-center transition-all;
+}
+
+.ios-segment-active {
+  @apply bg-white dark:bg-[#636366] shadow-ios-sm text-black dark:text-white;
+}
+
+.ios-segment-inactive {
+  @apply text-[#8E8E93];
+}
+
+/* ─── Stagger delays ─── */
+.stagger-1 { animation-delay: 0.04s; }
+.stagger-2 { animation-delay: 0.08s; }
+.stagger-3 { animation-delay: 0.12s; }
+.stagger-4 { animation-delay: 0.16s; }
+.stagger-5 { animation-delay: 0.20s; }
+.stagger-6 { animation-delay: 0.24s; }
+.stagger-7 { animation-delay: 0.28s; }
+
+/* ─── Bottom safe area ─── */
+.pb-safe {
+  padding-bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+}
+
+.bottom-safe {
+  padding-bottom: env(safe-area-inset-bottom, 8px);
+}
+
+/* ─── Check animation ─── */
+@keyframes checkBounce {
+  0% { transform: scale(0); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+.check-bounce {
+  animation: checkBounce 0.2s ease forwards;
+}
+
+/* Recharts tooltip */
+.recharts-default-tooltip {
+  border-radius: 12px !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08) !important;
+}
